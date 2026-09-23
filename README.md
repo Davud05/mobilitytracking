@@ -44,4 +44,3 @@ cmd /c "docker compose exec -T postgres psql -U mobility -d mobility < database\
 2. Apply `020`, then `021`, then `022`. Run `database/postgres/experiments/reporting_observations.sql`. Notes: `docs/reporting.md`.
 3. Start a clean database again. Apply `011_ticketing_integrity.sql`. Run the files in `database/postgres/experiments/constraints_should_fail.sql`, `constraints_extra_should_fail.sql`, and `constraints_should_succeed.sql`. Notes: `docs/integrity-map.md`.
 
-Lecture 3's duplicate-delivery insert is supposed to be stored. Lecture 2's unique constraint rejects it. Run those experiments on separate clean databases, or the second one will be testing a different question than the lab wrote down.
