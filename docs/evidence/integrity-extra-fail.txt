@@ -1,0 +1,42 @@
+ERROR:  23514: new row for relation "tickets" violates check constraint "tickets_price_non_negative"
+DETAIL:  Failing row contains (TICKET-1, USER-1, TRIP-M2-20260429-0800, CODE-M2-0001, Active, SINGLE, 2026-04-29 07:45:00+00, 2026-04-29 10:00:00+00, -1, DKK).
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_price_non_negative
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23514: new row for relation "tickets" violates check constraint "tickets_currency_iso"
+DETAIL:  Failing row contains (TICKET-1, USER-1, TRIP-M2-20260429-0800, CODE-M2-0001, Active, SINGLE, 2026-04-29 07:45:00+00, 2026-04-29 10:00:00+00, 36.00, kr).
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_currency_iso
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23503: update or delete on table "tickets" violates foreign key constraint "payments_ticket_currency_fk" on table "payments"
+DETAIL:  Key (id, currency)=(TICKET-1, DKK) is still referenced from table "payments".
+SCHEMA NAME:  public
+TABLE NAME:  payments
+CONSTRAINT NAME:  payments_ticket_currency_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2612
+ERROR:  23503: insert or update on table "tickets" violates foreign key constraint "tickets_product_currency_fk"
+DETAIL:  Key (product_code, currency)=(SINGLE, EUR) is not present in table "products".
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_product_currency_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599
+ERROR:  23503: insert or update on table "payments" violates foreign key constraint "payments_ticket_currency_fk"
+DETAIL:  Key (ticket_id, currency)=(TICKET-1, EUR) is not present in table "tickets".
+SCHEMA NAME:  public
+TABLE NAME:  payments
+CONSTRAINT NAME:  payments_ticket_currency_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599
+ERROR:  23514: new row for relation "validations" violates check constraint "validations_result_known"
+DETAIL:  Failing row contains (VALIDATION-1, TICKET-2, CODE-5C-0001, BUS-5C-01, STOP-CENTRAL, DEVICE-01, Maybe, 2026-04-29 09:10:00+00).
+SCHEMA NAME:  public
+TABLE NAME:  validations
+CONSTRAINT NAME:  validations_result_known
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23503: insert or update on table "validations" violates foreign key constraint "validations_stop_fk"
+DETAIL:  Key (stop_id)=(STOP-DOES-NOT-EXIST) is not present in table "stops".
+SCHEMA NAME:  public
+TABLE NAME:  validations
+CONSTRAINT NAME:  validations_stop_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599

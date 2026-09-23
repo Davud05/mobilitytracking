@@ -1,0 +1,105 @@
+SET
+CREATE TABLE
+CREATE FUNCTION
+ capture_step 
+--------------
+ 
+(1 row)
+
+INSERT 0 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+INSERT 0 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+UPDATE 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+UPDATE 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+DELETE 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+INSERT 0 1
+ capture_step 
+--------------
+ 
+(1 row)
+
+REFRESH MATERIALIZED VIEW
+ capture_step 
+--------------
+ 
+(1 row)
+
+Evidence: null amount means that approach returned no rows
+              step              | approach | operator_id | revenue_date | captured_amount | captured_payments 
+--------------------------------+----------+-------------+--------------+-----------------+-------------------
+ 01 baseline                    | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 01 baseline                    | base     | OP-METRO    | 2026-04-29   |           36.00 |                 1
+ 01 baseline                    | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 01 baseline                    | function | OP-METRO    | 2026-04-29   |           36.00 |                 1
+ 01 baseline                    | matview  |             |              |                 |                  
+ 01 baseline                    | trigger  |             |              |                 |                  
+ 02 captured insert             | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 02 captured insert             | base     | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 02 captured insert             | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 02 captured insert             | function | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 02 captured insert             | matview  |             |              |                 |                  
+ 02 captured insert             | trigger  | OP-METRO    | 2026-04-29   |              36 |                 1
+ 03 failed insert               | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 03 failed insert               | base     | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 03 failed insert               | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 03 failed insert               | function | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 03 failed insert               | matview  |             |              |                 |                  
+ 03 failed insert               | trigger  | OP-METRO    | 2026-04-29   |              36 |                 1
+ 04 failed to captured          | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 04 failed to captured          | base     | OP-METRO    | 2026-04-29   |          122.00 |                 3
+ 04 failed to captured          | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 04 failed to captured          | function | OP-METRO    | 2026-04-29   |          122.00 |                 3
+ 04 failed to captured          | matview  |             |              |                 |                  
+ 04 failed to captured          | trigger  | OP-METRO    | 2026-04-29   |              36 |                 1
+ 05 captured to refunded        | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 05 captured to refunded        | base     | OP-METRO    | 2026-04-29   |           86.00 |                 2
+ 05 captured to refunded        | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 05 captured to refunded        | function | OP-METRO    | 2026-04-29   |           86.00 |                 2
+ 05 captured to refunded        | matview  |             |              |                 |                  
+ 05 captured to refunded        | trigger  | OP-METRO    | 2026-04-29   |              36 |                 1
+ 06 delete failed-then-captured | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 06 delete failed-then-captured | base     | OP-METRO    | 2026-04-29   |           36.00 |                 1
+ 06 delete failed-then-captured | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 06 delete failed-then-captured | function | OP-METRO    | 2026-04-29   |           36.00 |                 1
+ 06 delete failed-then-captured | matview  |             |              |                 |                  
+ 06 delete failed-then-captured | trigger  | OP-METRO    | 2026-04-29   |              36 |                 1
+ 07 duplicate delivery          | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 07 duplicate delivery          | base     | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 07 duplicate delivery          | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 07 duplicate delivery          | function | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 07 duplicate delivery          | matview  |             |              |                 |                  
+ 07 duplicate delivery          | trigger  | OP-METRO    | 2026-04-29   |              72 |                 2
+ 08 after matview refresh       | base     | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 08 after matview refresh       | base     | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 08 after matview refresh       | function | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 08 after matview refresh       | function | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 08 after matview refresh       | matview  | OP-BUS      | 2026-04-29   |           36.00 |                 1
+ 08 after matview refresh       | matview  | OP-METRO    | 2026-04-29   |           72.00 |                 2
+ 08 after matview refresh       | trigger  | OP-METRO    | 2026-04-29   |              72 |                 2
+(49 rows)
+
+DROP FUNCTION

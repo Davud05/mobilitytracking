@@ -1,0 +1,30 @@
+Q1: next 20 scheduled trips for a route after a timestamp
+          id           | route_id | service_date | scheduled_departure_utc |  status   
+-----------------------+----------+--------------+-------------------------+-----------
+ TRIP-M2-20260429-0800 | LINE-M2  | 2026-04-29   | 2026-04-29 08:00:00+00  | Scheduled
+ TRIP-M2-20260429-1200 | LINE-M2  | 2026-04-29   | 2026-04-29 12:00:00+00  | Scheduled
+(2 rows)
+
+Q2: ordered stops on a route
+ stop_sequence |       stop_id       |     stop_name      | city_id 
+---------------+---------------------+--------------------+---------
+             1 | STOP-NORREPORT      | Nørreport          | CPH
+             2 | STOP-KONGENS-NYTORV | Kongens Nytorv     | CPH
+             3 | STOP-AIRPORT        | Copenhagen Airport | CPH
+(3 rows)
+
+Q3: every route and its scheduled-trip count on a service date
+    (routes with no trips are kept by the left join)
+ route_id | short_name | operator_id | scheduled_trips 
+----------+------------+-------------+-----------------
+ LINE-5C  | 5C         | OP-BUS      |               2
+ LINE-M2  | M2         | OP-METRO    |               2
+(2 rows)
+
+Q3b: same query on a date with no trips, so both routes show zero
+ route_id | short_name | scheduled_trips 
+----------+------------+-----------------
+ LINE-5C  | 5C         |               0
+ LINE-M2  | M2         |               0
+(2 rows)
+

@@ -1,0 +1,60 @@
+ERROR:  23514: new row for relation "trips" violates check constraint "trips_capacity_non_negative"
+DETAIL:  Failing row contains (TRIP-M2-20260429-0800, LINE-M2, 2026-04-29, 2026-04-29 08:00:00+00, Scheduled, -1, 2).
+SCHEMA NAME:  public
+TABLE NAME:  trips
+CONSTRAINT NAME:  trips_capacity_non_negative
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23514: new row for relation "trips" violates check constraint "trips_reserved_seats_valid"
+DETAIL:  Failing row contains (TRIP-M2-20260429-0800, LINE-M2, 2026-04-29, 2026-04-29 08:00:00+00, Scheduled, 120, 121).
+SCHEMA NAME:  public
+TABLE NAME:  trips
+CONSTRAINT NAME:  trips_reserved_seats_valid
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23503: insert or update on table "tickets" violates foreign key constraint "tickets_trip_fk"
+DETAIL:  Key (trip_id)=(TRIP-DOES-NOT-EXIST) is not present in table "trips".
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_trip_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599
+ERROR:  23514: new row for relation "tickets" violates check constraint "tickets_validity_window"
+DETAIL:  Failing row contains (T-REVERSED, USER-1, TRIP-M2-20260429-0800, CODE-REVERSED, Active, SINGLE, 2026-04-29 09:00:00+00, 2026-04-29 08:00:00+00, 36, DKK).
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_validity_window
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23505: duplicate key value violates unique constraint "tickets_code_unique"
+DETAIL:  Key (ticket_code)=(CODE-M2-0001) already exists.
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_code_unique
+LOCATION:  _bt_check_unique, nbtinsert.c:666
+ERROR:  23514: new row for relation "tickets" violates check constraint "tickets_status_known"
+DETAIL:  Failing row contains (TICKET-1, USER-1, TRIP-M2-20260429-0800, CODE-M2-0001, Unknown, SINGLE, 2026-04-29 07:45:00+00, 2026-04-29 10:00:00+00, 36.00, DKK).
+SCHEMA NAME:  public
+TABLE NAME:  tickets
+CONSTRAINT NAME:  tickets_status_known
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23514: new row for relation "products" violates check constraint "products_price_non_negative"
+DETAIL:  Failing row contains (SINGLE, Single trip, -1, DKK).
+SCHEMA NAME:  public
+TABLE NAME:  products
+CONSTRAINT NAME:  products_price_non_negative
+LOCATION:  ExecConstraints, execMain.c:2074
+ERROR:  23503: insert or update on table "payments" violates foreign key constraint "payments_ticket_fk"
+DETAIL:  Key (ticket_id)=(NO-SUCH-TICKET) is not present in table "tickets".
+SCHEMA NAME:  public
+TABLE NAME:  payments
+CONSTRAINT NAME:  payments_ticket_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599
+ERROR:  23505: duplicate key value violates unique constraint "payments_external_reference_unique"
+DETAIL:  Key (external_payment_reference)=(gateway-capture-0001) already exists.
+SCHEMA NAME:  public
+TABLE NAME:  payments
+CONSTRAINT NAME:  payments_external_reference_unique
+LOCATION:  _bt_check_unique, nbtinsert.c:666
+ERROR:  23503: insert or update on table "validations" violates foreign key constraint "validations_ticket_identity_fk"
+DETAIL:  Key (ticket_id, ticket_code)=(TICKET-1, CODE-5C-0001) is not present in table "tickets".
+SCHEMA NAME:  public
+TABLE NAME:  validations
+CONSTRAINT NAME:  validations_ticket_identity_fk
+LOCATION:  ri_ReportViolation, ri_triggers.c:2599
