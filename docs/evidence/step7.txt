@@ -1,0 +1,115 @@
+﻿
+===== reader via product_id, before drop =====
+       id       |              product_id              | product_code | product_name | price | currency 
+----------------+--------------------------------------+--------------+--------------+-------+----------
+ LAB04-NEW-ID-1 | 5846b3d0-28e7-4478-a441-2e9f90376254 | DAY          | Day pass     | 72.00 | DKK
+ LAB04-OLD-1    | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-1       | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-2       | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-3       | 5846b3d0-28e7-4478-a441-2e9f90376254 | DAY          | Day pass     | 80.00 | DKK
+(5 rows)
+
+EXIT:0
+
+===== dependency check, before drop =====
+                    dependent_object                     | deptype 
+---------------------------------------------------------+---------
+ constraint tickets_product_currency_fk on table tickets | a
+ constraint tickets_product_fk on table tickets          | a
+(2 rows)
+
+ function_name 
+---------------
+(0 rows)
+
+ viewname 
+----------
+(0 rows)
+
+EXIT:0
+
+===== probe: a view blocks the drop (rolled back) =====
+BEGIN
+CREATE VIEW
+                    dependent_object                     | deptype 
+---------------------------------------------------------+---------
+ constraint tickets_product_currency_fk on table tickets | a
+ constraint tickets_product_fk on table tickets          | a
+ rule _RETURN on view ticket_product_codes               | n
+(3 rows)
+
+SAVEPOINT
+ERROR:  cannot drop column product_code of table tickets because other objects depend on it
+DETAIL:  view ticket_product_codes depends on column product_code of table tickets
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+ROLLBACK
+ROLLBACK
+EXIT:0
+
+===== 034 drop product_code =====
+BEGIN
+SET
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COMMIT
+EXIT:0
+
+===== dependency check, after drop =====
+ dependent_object | deptype 
+------------------+---------
+(0 rows)
+
+ function_name 
+---------------
+(0 rows)
+
+ viewname 
+----------
+(0 rows)
+
+EXIT:0
+
+===== new writer without product_code =====
+INSERT 0 1
+EXIT:0
+
+===== reader via product_id, after drop =====
+       id       |              product_id              | product_code | product_name | price | currency 
+----------------+--------------------------------------+--------------+--------------+-------+----------
+ LAB04-NEW-1    | 5846b3d0-28e7-4478-a441-2e9f90376254 | DAY          | Day pass     | 80.00 | DKK
+ LAB04-NEW-ID-1 | 5846b3d0-28e7-4478-a441-2e9f90376254 | DAY          | Day pass     | 72.00 | DKK
+ LAB04-OLD-1    | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-1       | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-2       | eb161e22-d422-4e9d-92c9-885a5c9f6812 | SINGLE       | Single trip  | 36.00 | DKK
+ TICKET-3       | 5846b3d0-28e7-4478-a441-2e9f90376254 | DAY          | Day pass     | 80.00 | DKK
+(6 rows)
+
+EXIT:0
+
+===== old writer must now fail =====
+ERROR:  column "product_code" of relation "tickets" does not exist
+LINE 2:     (id, user_id, trip_id, ticket_code, status, product_code...
+                                                        ^
+EXIT:3
+
+===== old reader must now fail =====
+ERROR:  column "product_code" does not exist
+LINE 1: select id, product_code, price, currency
+                   ^
+HINT:  Perhaps you meant to reference the column "tickets.product_id".
+EXIT:3
+
+===== products.code is kept =====
+  code  |                  id                  | price | currency 
+--------+--------------------------------------+-------+----------
+ DAY    | 5846b3d0-28e7-4478-a441-2e9f90376254 | 80.00 | DKK
+ SINGLE | eb161e22-d422-4e9d-92c9-885a5c9f6812 | 36.00 | DKK
+(2 rows)
+
+===== remaining ticket columns =====
+ column_name 
+-------------
+ product_id
+(1 row)
+
