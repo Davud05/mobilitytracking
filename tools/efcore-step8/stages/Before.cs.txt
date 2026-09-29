@@ -1,0 +1,56 @@
+using Microsoft.EntityFrameworkCore;
+
+namespace EfStep8;
+
+public class Product
+{
+    public string Code { get; set; } = "";
+    public string Name { get; set; } = "";
+    public decimal Price { get; set; }
+    public string Currency { get; set; } = "";
+}
+
+public class Ticket
+{
+    public string Id { get; set; } = "";
+    public string ProductCode { get; set; } = "";
+    public Product Product { get; set; } = null!;
+    public decimal Price { get; set; }
+    public string Currency { get; set; } = "";
+}
+
+public class MobilityContext : DbContext
+{
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Ticket> Tickets => Set<Ticket>();
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options) =>
+        options.UseNpgsql("Host=localhost;Database=mobility;Username=mobility;Password=mobility");
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        model.Entity<Product>(e =>
+        {
+            e.ToTable("products");
+            e.HasKey(p => p.Code).HasName("products_pkey");
+            e.Property(p => p.Code).HasColumnName("code");
+            e.Property(p => p.Name).HasColumnName("name");
+            e.Property(p => p.Price).HasColumnName("price");
+            e.Property(p => p.Currency).HasColumnName("currency");
+        });
+
+        model.Entity<Ticket>(e =>
+        {
+            e.ToTable("tickets");
+            e.HasKey(t => t.Id).HasName("tickets_pkey");
+            e.Property(t => t.Id).HasColumnName("id");
+            e.Property(t => t.ProductCode).HasColumnName("product_code");
+            e.Property(t => t.Price).HasColumnName("price");
+            e.Property(t => t.Currency).HasColumnName("currency");
+            e.HasOne(t => t.Product)
+                .WithMany()
+                .HasForeignKey(t => t.ProductCode)
+                .HasConstraintName("tickets_product_fk");
+        });
+    }
+}

@@ -1,0 +1,4 @@
+bin/
+obj/
+Model.cs
+Migrations/

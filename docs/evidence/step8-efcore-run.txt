@@ -1,0 +1,47 @@
+﻿===== 011 integrity =====
+BEGIN
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COMMIT
+===== EF history table =====
+CREATE TABLE
+
+===== attempt 1: EF script as generated =====
+START TRANSACTION
+DO
+ERROR:  index "IX_tickets_product_code" does not exist
+CONTEXT:  SQL statement "DROP INDEX "IX_tickets_product_code""
+PL/pgSQL function inline_code_block line 4 at SQL statement
+EXIT:3
+
+===== attempt 2: with the index EF expects from its own first migration =====
+CREATE INDEX
+START TRANSACTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+ERROR:  insert or update on table "tickets" violates foreign key constraint "tickets_product_id_fk"
+DETAIL:  Key (product_id)=(00000000-0000-0000-0000-000000000000) is not present in table "products".
+CONTEXT:  SQL statement "ALTER TABLE tickets ADD CONSTRAINT tickets_product_id_fk FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE"
+PL/pgSQL function inline_code_block line 4 at SQL statement
+EXIT:3
+
+===== state afterwards =====
+ column_name  
+--------------
+ product_code
+(1 row)
+
+ ef_migrations_recorded 
+------------------------
+                      0
+(1 row)
+
