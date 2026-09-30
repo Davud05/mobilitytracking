@@ -70,7 +70,7 @@ Lecture 3: reporting experiment and comparison
 - Evidence: [docs/evidence/reporting.txt](docs/evidence/reporting.txt)
 
 Lecture 4: migration stages and verification
-- Stages: [030_expand_product_identity.sql](database/postgres/migrations/030_expand_product_identity.sql), [031_backfill_ticket_product.sql](database/postgres/migrations/031_backfill_ticket_product.sql), [033_require_ticket_product.sql](database/postgres/migrations/033_require_ticket_product.sql), [034_drop_ticket_product_code.sql](database/postgres/migrations/034_drop_ticket_product_code.sql)
+- Stages: [030_expand_product_identity.sql](database/postgres/migrations/030_expand_product_identity.sql), [031_backfill_ticket_product.sql](database/postgres/migrations/031_backfill_ticket_product.sql), [032_require_ticket_product.sql](database/postgres/migrations/032_require_ticket_product.sql), [033_drop_ticket_product_code.sql](database/postgres/migrations/033_drop_ticket_product_code.sql)
 - Old and new application code: [database/postgres/experiments/lecture04/](database/postgres/experiments/lecture04/)
 - Verification: [verify.sql](database/postgres/experiments/lecture04/verify.sql), [dependency_check.sql](database/postgres/experiments/lecture04/dependency_check.sql), [view_blocks_drop.sql](database/postgres/experiments/lecture04/view_blocks_drop.sql)
 - Run order and notes: [docs/step7.md](docs/step7.md), evidence [docs/evidence/step7.txt](docs/evidence/step7.txt)
@@ -86,9 +86,9 @@ MobilityTicketing payments change after insert: a failed payment is later captur
 
 ### Product identity is changed in expand, backfill and contract stages
 
-We chose to add `tickets.product_id` next to `product_code` instead of replacing the column in one migration. `030` adds the column and a `NOT VALID` foreign key. `031` backfills from `product_code` and can be run again. `033` validates the key and sets `NOT NULL`. `034` drops `product_code` only after [dependency_check.sql](database/postgres/experiments/lecture04/dependency_check.sql) finds nothing that still reads it.
+We chose to add `tickets.product_id` next to `product_code` instead of replacing the column in one migration. `030` adds the column and a `NOT VALID` foreign key. `031` backfills from `product_code` and can be run again. `032` validates the key and sets `NOT NULL`. `033` drops `product_code` only after [dependency_check.sql](database/postgres/experiments/lecture04/dependency_check.sql) finds nothing that still reads it.
 
-The alternative was a single migration that drops `product_code` and adds `product_id`. That breaks the old writer and old reader in [lecture04/](database/postgres/experiments/lecture04/) at the moment of deploy, and tickets sold during the change would have no product. With the staged version both old and new code work between `030` and `033`. `034` drops without `CASCADE`, and [view_blocks_drop.sql](database/postgres/experiments/lecture04/view_blocks_drop.sql) shows that a dependent view makes the drop fail instead of being removed silently. Evidence: [docs/evidence/step7.txt](docs/evidence/step7.txt).
+The alternative was a single migration that drops `product_code` and adds `product_id`. That breaks the old writer and old reader in [lecture04/](database/postgres/experiments/lecture04/) at the moment of deploy, and tickets sold during the change would have no product. With the staged version both old and new code work between `030` and `032`. `033` drops without `CASCADE`, and [view_blocks_drop.sql](database/postgres/experiments/lecture04/view_blocks_drop.sql) shows that a dependent view makes the drop fail instead of being removed silently. Evidence: [docs/evidence/step7.txt](docs/evidence/step7.txt).
 
 ## One limitation or open question
 

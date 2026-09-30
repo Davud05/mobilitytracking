@@ -55,10 +55,10 @@ The failure depends on existing data. With an empty `tickets` table no row viola
 
 | Question | EF Core | Our SQL |
 | --- | --- | --- |
-| When `product_id` becomes required | Immediately, in the same migration. Existing rows get the zero UUID as a default. | Nullable in `030`. Required in `033`, after `031` has filled it and `verify.sql` returns zero rows. |
-| Creation of the foreign key | Validated at once, with `ON DELETE CASCADE`. | `NOT VALID` in `030`, so old rows are not checked yet. Validated in `033`. Default `NO ACTION`: a product with tickets cannot be deleted. |
+| When `product_id` becomes required | Immediately, in the same migration. Existing rows get the zero UUID as a default. | Nullable in `030`. Required in `032`, after `031` has filled it and `verify.sql` returns zero rows. |
+| Creation of the foreign key | Validated at once, with `ON DELETE CASCADE`. | `NOT VALID` in `030`, so old rows are not checked yet. Validated in `032`. Default `NO ACTION`: a product with tickets cannot be deleted. |
 | How existing rows are updated | They are not. No statement copies `product_code` to `product_id`. | `031` looks up each ticket's `product_code` in `products` and stores that product's id. Running it again changes zero rows. |
-| Removal of `product_code` | Step 3, before anything has been copied. | `034`, the last change, after `033` and after `dependency_check.sql`. |
+| Removal of `product_code` | Step 3, before anything has been copied. | `033`, the last change, after `032` and after `dependency_check.sql`. |
 | Anything destructive | Dropping `product_code` destroys the only link from a ticket to its product. `ON DELETE CASCADE` would delete sold tickets together with their product. `Down()` adds `product_code` back as `''` for every ticket, so rolling back does not restore the old codes. | No step deletes data before it is copied. The drop does not use `CASCADE`, and a view on the column stops it, which `view_blocks_drop.sql` shows. |
 
 ## What the tool can work out, and what it cannot
@@ -85,4 +85,4 @@ With EF Core, the same change needs several migrations, each deployed on its own
 3. validate the key, make `product_id` required, and set the delete behaviour to restrict;
 4. after the dependency check, drop `product_code`.
 
-That is the same sequence as `030`, `031`, `033`, and `034`. The tool can write each step's DDL. Knowing that the migration has to be split, and in what order, comes from the data and from which code is deployed.
+That is the same sequence as `030`, `031`, `032`, and `033`. The tool can write each step's DDL. Knowing that the migration has to be split, and in what order, comes from the data and from which code is deployed.

@@ -1,5 +1,5 @@
 -- Step 7. Remove the legacy ticket reference.
--- Apply only after 033_require_ticket_product.sql, and after
+-- Apply only after 032_require_ticket_product.sql, and after
 -- experiments/lecture04/dependency_check.sql lists nothing except the two
 -- product_code foreign keys from 011_ticketing_integrity.sql.
 -- Those keys are dropped by name. CASCADE is not used, so any other dependent

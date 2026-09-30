@@ -1,5 +1,5 @@
 -- Step 7. Find everything that still uses tickets.product_code before dropping it.
--- Run after 033_require_ticket_product.sql.
+-- Run after 032_require_ticket_product.sql.
 
 -- Objects PostgreSQL records as depending on the column:
 -- constraints, indexes, and views.

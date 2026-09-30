@@ -1,5 +1,5 @@
 -- Step 4. A writer that starts from a product ID.
--- Run after 030_expand_product_identity.sql and before 034_drop_ticket_product_code.sql.
+-- Run after 030_expand_product_identity.sql and before 033_drop_ticket_product_code.sql.
 -- The function lives in pg_temp, so it disappears when this session ends and
 -- does not show up in dependency_check.sql for step 7.
 -- Change ticket_id and ticket_code for each new ticket, as with old_writer.sql:

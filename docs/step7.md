@@ -1,6 +1,6 @@
 # Step 7: remove the old reference
 
-Step 7 builds on the product-identity work already on `L-test`: `030_expand_product_identity.sql`, `031_backfill_ticket_product.sql`, and `033_require_ticket_product.sql`. The full run is in `docs/evidence/step7.txt`.
+Step 7 builds on the product-identity work already on `L-test`: `030_expand_product_identity.sql`, `031_backfill_ticket_product.sql`, and `032_require_ticket_product.sql`. The full run is in `docs/evidence/step7.txt`.
 
 ## Run order
 
@@ -17,11 +17,11 @@ cmd /c "docker compose exec -T postgres psql -U mobility -d mobility -v ON_ERROR
 5. `database/postgres/experiments/lecture04/new_writer.sql`
 6. `database/postgres/migrations/031_backfill_ticket_product.sql`, twice
 7. `database/postgres/experiments/lecture04/verify.sql`
-8. `database/postgres/migrations/033_require_ticket_product.sql`
+8. `database/postgres/migrations/032_require_ticket_product.sql`
 9. `database/postgres/experiments/lecture04/new_reader_product_id.sql`
 10. `database/postgres/experiments/lecture04/dependency_check.sql`
 11. `database/postgres/experiments/lecture04/view_blocks_drop.sql`, with `ON_ERROR_STOP=0`
-12. `database/postgres/migrations/034_drop_ticket_product_code.sql`
+12. `database/postgres/migrations/033_drop_ticket_product_code.sql`
 13. `database/postgres/experiments/lecture04/new_writer_product_id.sql`
 14. `database/postgres/experiments/lecture04/new_reader_product_id.sql`
 
@@ -34,13 +34,13 @@ Two cases are rejected by the writer, and neither ticket is stored:
 - an unknown product ID, SQLSTATE `23503`;
 - the `DAY` product ID with a supplied `SINGLE` code, SQLSTATE `22023`.
 
-The database alone would accept the second case. `product_code` and `product_id` are two separate foreign keys, and neither checks that they name the same product. `verify.sql` is what catches such a row before `033`.
+The database alone would accept the second case. `product_code` and `product_id` are two separate foreign keys, and neither checks that they name the same product. `verify.sql` is what catches such a row before `032`.
 
-The writer is a function in `pg_temp`. It is removed when the session ends, so it does not appear in the step 7 dependency check. After `034`, the file fails, because it writes `product_code`.
+The writer is a function in `pg_temp`. It is removed when the session ends, so it does not appear in the step 7 dependency check. After `033`, the file fails, because it writes `product_code`.
 
 ## Reader and writer
 
-`new_reader_product_id.sql` joins `products` only on `tickets.product_id`. It already returns every ticket before the drop, because `031` has filled `product_id` and `033` has made it required. The product code in its output comes from `products.code`.
+`new_reader_product_id.sql` joins `products` only on `tickets.product_id`. It already returns every ticket before the drop, because `031` has filled `product_id` and `032` has made it required. The product code in its output comes from `products.code`.
 
 `new_writer_product_id.sql` inserts a ticket without `product_code`. It looks the product up once, stores that product's id, and takes the agreed price and currency as inputs. An unknown product code inserts zero rows.
 
@@ -70,7 +70,7 @@ The transaction is rolled back. This is the case `CASCADE` would have hidden by 
 
 ## Drop
 
-`034_drop_ticket_product_code.sql` drops the two foreign keys by name and then the column. It does not use `CASCADE`, so any dependency the check missed stops the migration. `if exists` on the constraints lets it run on a database where `011` was not applied.
+`033_drop_ticket_product_code.sql` drops the two foreign keys by name and then the column. It does not use `CASCADE`, so any dependency the check missed stops the migration. `if exists` on the constraints lets it run on a database where `011` was not applied.
 
 After the drop:
 

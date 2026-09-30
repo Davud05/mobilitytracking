@@ -1,4 +1,4 @@
-﻿
+
 ===== reader via product_id, before drop =====
        id       |              product_id              | product_code | product_name | price | currency 
 ----------------+--------------------------------------+--------------+--------------+-------+----------
@@ -46,7 +46,7 @@ ROLLBACK
 ROLLBACK
 EXIT:0
 
-===== 034 drop product_code =====
+===== 033 drop product_code =====
 BEGIN
 SET
 ALTER TABLE
