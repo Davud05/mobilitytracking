@@ -96,4 +96,3 @@ Two concurrent purchases can oversell a trip. `trips_reserved_seats_valid` check
 
 Next we would run two sessions that buy the last seat of the same trip at the same time and record whether both commit. Then we would repeat it with a single conditional update, `set reserved_seats = reserved_seats + 1 where reserved_seats < capacity`, and treat zero updated rows as sold out. We are also unsure whether a seat is held at payment authorization or only when the payment is `Captured`.
 
-
